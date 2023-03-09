@@ -45,7 +45,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     for (current_offset = 0; current_offset < LAB_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
 
-        // [6.888 Part 1]- Fill this in!
+        // [Part 1]- Fill this in!
         // Feel free to create helper methods as necessary.
         // Use "call_kernel_part1" to interact with the kernel module
         // Find the value of leaked_byte for offset "current_offset"
