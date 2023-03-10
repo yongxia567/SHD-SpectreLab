@@ -1,7 +1,9 @@
-#ifndef LAB_H
-#define LAB_H
+#ifndef SHD_SPECTRE_LAB_H
+#define SHD_SPECTRE_LAB_H
 
 // Joseph Ravichandran
+// MIT Secure Hardware Design
+// Created for Spring 2022, Updated for Spring 2023
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,9 +13,9 @@
 #include <stdint.h>
 #include <sys/mman.h>
 
-/************************
- * Lab Helper Methods *
- ************************/
+/********************************************
+ * SHD Spectre Lab Userspace Helper Methods *
+ ********************************************/
 
 /*
  * clflush
@@ -65,4 +67,4 @@ void init_shared_memory(char *shared_memory, size_t len);
  */
 int run_attacker(int kernel_fd, char *shared_memory);
 
-#endif // LAB_H
+#endif // SHD_SPECTRE_LAB_H

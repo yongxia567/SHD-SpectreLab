@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "lab.h"
-#include "labipc.h"
+#include "labspectre.h"
+#include "labspectreipc.h"
 
 /*
  * call_kernel_part1
@@ -21,7 +21,7 @@
  *  - offset: The offset into the secret to try and read
  */
 static inline void call_kernel_part1(int kernel_fd, char *shared_memory, size_t offset) {
-    lab_command local_cmd;
+    spectre_lab_command local_cmd;
     local_cmd.kind = COMMAND_PART1;
     local_cmd.arg1 = (uint64_t)shared_memory;
     local_cmd.arg2 = offset;
@@ -37,12 +37,12 @@ static inline void call_kernel_part1(int kernel_fd, char *shared_memory, size_t 
  *  - shared_memory: A pointer to a region of memory shared with the server
  */
 int run_attacker(int kernel_fd, char *shared_memory) {
-    char leaked_str[LAB_SECRET_MAX_LEN];
+    char leaked_str[SHD_SPECTRE_LAB_SECRET_MAX_LEN];
     size_t current_offset = 0;
 
     printf("Launching attacker\n");
 
-    for (current_offset = 0; current_offset < LAB_SECRET_MAX_LEN; current_offset++) {
+    for (current_offset = 0; current_offset < SHD_SPECTRE_LAB_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
 
         // [Part 1]- Fill this in!

@@ -7,8 +7,8 @@
 #include <emmintrin.h>
 #include <x86intrin.h>
 
-#include "lab.h"
-#include "labipc.h"
+#include "labspectre.h"
+#include "labspectreipc.h"
 
 /*
  * mfence
@@ -67,8 +67,8 @@ uint64_t time_access(void *addr) {
  * Side Effects: Initializes some memory and flushes it from the cache.
  */
 void init_shared_memory(char *shared_memory, size_t len) {
-    for (int i = 0; i < (len / LAB_PAGE_SIZE); i++) {
-        shared_memory[LAB_PAGE_SIZE * i] = 0x41;
-        clflush(&shared_memory[LAB_PAGE_SIZE * i]);
+    for (int i = 0; i < (len / SHD_SPECTRE_LAB_PAGE_SIZE); i++) {
+        shared_memory[SHD_SPECTRE_LAB_PAGE_SIZE * i] = 0x41;
+        clflush(&shared_memory[SHD_SPECTRE_LAB_PAGE_SIZE * i]);
     }
 }
