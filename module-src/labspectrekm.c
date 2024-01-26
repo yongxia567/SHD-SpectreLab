@@ -2,10 +2,12 @@
  * labspectrekm.c
  * Kernel module for the Spectre lab in the Secure Hardware Design course at MIT
  * Created by Joseph Ravichandran for Spring 2022
- * Updated for Spring 2023
+ * Updated for Spring 2024
+ * Get the latest course materials here: https://shd.mit.edu
  */
 #include <linux/module.h>
 #include <linux/kernel.h>
+#include <linux/version.h>
 #include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/proc_fs.h>
@@ -17,7 +19,7 @@
 #include "labspectreipc.h"
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Joseph Ravichandran <jravi@csail.mit.edu>");
+MODULE_AUTHOR("Joseph Ravichandran <jravi@mit.edu>");
 MODULE_DESCRIPTION("Spectre lab target module for Secure Hardware Design at MIT");
 
 // The secrets you're trying to leak!
@@ -30,10 +32,24 @@ static volatile size_t __attribute__((aligned(32768))) secret_leak_limit_part2 =
 static volatile size_t __attribute__((aligned(32768))) secret_leak_limit_part3 = 4;
 
 static struct proc_dir_entry *spectre_lab_procfs_victim = NULL;
-static const struct file_operations  spectre_lab_victim_ops = {
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+#define HAS_PIN_USER_PAGES 1
+#else
+#define HAS_PIN_USER_PAGES 0
+#endif
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static const struct proc_ops spectre_lab_victim_ops = {
+    .proc_write = spectre_lab_victim_write,
+    .proc_read = spectre_lab_victim_read,
+};
+#else
+static const struct file_operations spectre_lab_victim_ops = {
     .write = spectre_lab_victim_write,
     .read = spectre_lab_victim_read,
 };
+#endif
 
 /*
  * print_cmd
@@ -121,14 +137,23 @@ ssize_t spectre_lab_victim_write(struct file *file_in, const char __user *userbu
         }
 
         // Pin the pages to RAM so they aren't swapped to disk
+#if HAS_PIN_USER_PAGES
+        retval = pin_user_pages_fast(user_cmd.arg1, SHD_SPECTRE_LAB_SHARED_MEMORY_NUM_PAGES, FOLL_WRITE, pages);
+#else
         retval = get_user_pages_fast(user_cmd.arg1, SHD_SPECTRE_LAB_SHARED_MEMORY_NUM_PAGES, FOLL_WRITE, pages);
+#endif // HAS_PIN_USER_PAGES
+
         if (SHD_SPECTRE_LAB_SHARED_MEMORY_NUM_PAGES != retval) {
             printk(SHD_PRINT_INFO "Unable to pin the user pages! Requested %d pages, got %d\n", SHD_SPECTRE_LAB_SHARED_MEMORY_NUM_PAGES, retval);
 
             // If the return value is negative, its an error, so don't try to unpin!
             if (retval > 0) {
                 // Unpin the pages that got pinned before exiting
+#if HAS_PIN_USER_PAGES
+                unpin_user_pages(pages, retval);
+#else
                 put_user_pages(pages, retval);
+#endif // HAS_PIN_USER_PAGES
             }
 
             return num_bytes;
@@ -194,7 +219,11 @@ ssize_t spectre_lab_victim_write(struct file *file_in, const char __user *userbu
         }
 
         // Unpin to ensure refcounts are valid
+#if HAS_PIN_USER_PAGES
+        unpin_user_pages(pages, SHD_SPECTRE_LAB_SHARED_MEMORY_NUM_PAGES);
+#else
         put_user_pages(pages, SHD_SPECTRE_LAB_SHARED_MEMORY_NUM_PAGES);
+#endif // HAS_PIN_USER_PAGES
 
         // Success!
         return num_bytes;
