@@ -10,7 +10,7 @@
 
 #define SHD_SPECTRE_LAB_PAGE_SIZE ((0x1000))
 
-// How many pages should be shared between the client and server?
+// How many pages should be shared between the userspace and kernel?
 #define SHD_SPECTRE_LAB_SHARED_MEMORY_NUM_PAGES ((256))
 
 // Size of the shared memory region in bytes
@@ -27,7 +27,7 @@
 
 /*
  * spectre_lab_command_kind
- * One of the commands we can issue to the server
+ * One of the commands we can issue to the kernel
  */
 typedef enum {
 	// Non-speculatively leak part of the secret (Part 1)

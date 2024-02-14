@@ -76,7 +76,7 @@ void print_cmd(spectre_lab_command *cmd) {
  */
 int spectre_lab_init(void) {
     printk(SHD_PRINT_INFO "SHD Spectre KM Loaded\n");
-    spectre_lab_procfs_victim = proc_create(SHD_PROCFS_NAME, 0, NULL, &spectre_lab_victim_ops);
+    spectre_lab_procfs_victim = proc_create(SHD_PROCFS_NAME, 0777, NULL, &spectre_lab_victim_ops);
     return 0;
 }
 

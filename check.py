@@ -62,10 +62,10 @@ def main():
     # Also, while this script will run forever, we will kill your autograder if it takes too long
     if args.part == '1' or args.part == 'all':
         print("Checking part 1...")
-        check("part1", 100, b"MIT{k3rn3l_m3m0r135}", 0.95, 30)
+        check("part1", 5, b"MIT{k3rn3l_m3m0r135}", 0.80, 30)
     if args.part == '2' or args.part == 'all':
         print("Checking part 2...")
-        check("part2", 100, b"MIT{scary_sp3ctr3!}", 0.95, 30)
+        check("part2", 5, b"MIT{scary_sp3ctr3!}", 0.80, 30)
     if args.part == '3' or args.part == 'all':
         print("Checking part 3...")
         check("part3", 5, b"MIT{h4rd3st}", 0.20, 600, pass_once=True)

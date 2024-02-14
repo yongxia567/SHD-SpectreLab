@@ -63,7 +63,7 @@ void init_shared_memory(char *shared_memory, size_t len);
  *
  * Arguments:
  *  - kernel_fd: A file descriptor referring to the lab vulnerable kernel module
- *  - shared_memory: A pointer to a region of memory shared with the server
+ *  - shared_memory: A pointer to a region of memory shared with the kernel
  */
 int run_attacker(int kernel_fd, char *shared_memory);
 
