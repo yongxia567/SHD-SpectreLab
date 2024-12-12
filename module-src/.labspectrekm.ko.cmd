@@ -1,0 +1,1 @@
+cmd_/home/team5/SHD-SpectreLab/module-src/labspectrekm.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/team5/SHD-SpectreLab/module-src/labspectrekm.ko /home/team5/SHD-SpectreLab/module-src/labspectrekm.o /home/team5/SHD-SpectreLab/module-src/labspectrekm.mod.o;  true
